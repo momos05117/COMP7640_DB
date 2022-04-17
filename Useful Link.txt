@@ -27,3 +27,7 @@ https://www.freeprojectz.com/entity-relationship/shop-management-system-er-diagr
 *Join Table
 https://www.javatpoint.com/python-mysql-join-operation
 https://stackoverflow.com/questions/2366780/how-to-do-an-inner-join-on-multiple-columns
+
+
+
+"SELECT `iname` FROM `itemlist` INNER JOIN `orderlist` ON orderlist.compid1 = itemlist.compid WHERE oid LIKE '%"+oid+"%'" 
