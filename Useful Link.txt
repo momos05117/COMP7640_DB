@@ -17,3 +17,9 @@ https://www.tutorialspoint.com/python_data_access/python_mysql_delete_data.htm
 
 *Search / Filter Data (Start From 5:45)
 https://www.youtube.com/watch?v=KrlHT1HasJ8
+
+*Normalization 
+https://www.youtube.com/watch?v=xoTyrdT9SZI
+
+*ER Diagram 
+https://www.freeprojectz.com/entity-relationship/shop-management-system-er-diagram

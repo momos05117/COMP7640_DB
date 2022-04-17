@@ -101,10 +101,8 @@ def searchitem():
 def cancelorder():
      cursor = connection.cursor()
      print('---Cancel Order---')
-     iid = input ('Enter Item Code: ')
-     sid = input ('Enter Shop ID: ')
-     compid = iid+sid
-     sql = "DELETE FROM itemlist WHERE compid LIKE '%"+compid+"%'"
+     oid = input ('Enter Order ID: ')
+     sql = "DELETE FROM orderlist WHERE oid LIKE '%"+oid+"%'"
      cursor.execute(sql)
      connection.commit()
 
