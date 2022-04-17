@@ -1,0 +1,19 @@
+
+****Main Source (From Tempo)****
+*Interface 
+https://medium.com/linkit-intecs/how-to-build-a-small-command-line-interface-to-store-and-retrieve-data-with-python-database-d6596caff2bf
+
+*Connect to Python (start from 2:39:12)
+https://www.youtube.com/watch?v=gvRXjsrpCHw&list=PLD6ny-6cWf_W4XAoXJwg7ByyKWWJbSe06&index=2&t=795s
+
+*Import os.system 
+https://www.geeksforgeeks.org/python-os-system-method/
+
+*Show all results
+https://www.w3schools.com/python/python_mysql_select.asp
+
+*Delete data 
+https://www.tutorialspoint.com/python_data_access/python_mysql_delete_data.htm
+
+*Search / Filter Data (Start From 5:45)
+https://www.youtube.com/watch?v=KrlHT1HasJ8

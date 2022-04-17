@@ -5,7 +5,7 @@ import os
 
 connection = mysql.connector.connect(host='localhost',
                                      user='root',
-                                     passwd='passw0rd',
+                                     passwd='Passw0rd',
                                      database='management')
 
 def displayMainMenu():
