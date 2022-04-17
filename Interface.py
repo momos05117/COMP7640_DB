@@ -114,7 +114,7 @@ def itempurchase():
     cursor = connection.cursor()
     print('---Item Purchase---')
     oid = input ('Enter Order ID: ')
-    sql = "SELECT distinct itemlist.iname FROM itemlist INNER JOIN orderlist ON itemlist.compid IN(orderlist.compid1,orderlist.compid2, orderlist.compid3 ) WHERE orderlist.oid like '%"+oid+"%'"
+    sql = "SELECT itemlist.iname, orderlist.cid FROM itemlist INNER JOIN orderlist ON itemlist.compid IN(orderlist.compid1,orderlist.compid2, orderlist.compid3 ) WHERE orderlist.oid like '%"+oid+"%'"
     cursor.execute(sql)
     records=cursor.fetchall()
     for r in records:
