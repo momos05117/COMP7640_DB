@@ -16,12 +16,13 @@ def displayMainMenu():
     print(' 4. Add A Item')
     print(' 5. Search Item')
     print(' 6. Cancel Order')
-    print(' 7. Exit')
+    print(' 7. Item Purchase')
+    print(' 8. Exit')
     print(' — — — — — — — — — — ')
 
 def exit():
-    n = int(input(' Press 7 to exit : '))
-    if n == 7:
+    n = int(input(' Press 8 to exit : '))
+    if n == 8:
        os.system('cls') # For Windows
        run()
     else:
@@ -109,6 +110,20 @@ def cancelorder():
      print('---Sucessfully Canceled ---')
      exit ()
 
+def itempurchase():
+    cursor = connection.cursor()
+    print('---Item Purchase---')
+    oid = input ('Enter Order ID: ')
+    sql = "SELECT distinct itemlist.iname FROM itemlist INNER JOIN orderlist ON itemlist.compid IN(orderlist.compid1,orderlist.compid2, orderlist.compid3 ) WHERE orderlist.oid like '%"+oid+"%'"
+    cursor.execute(sql)
+    records=cursor.fetchall()
+    for r in records:
+        print(r)
+
+    print('---Purchase List End ---')
+    exit ()
+
+
 
 def run ():
     displayMainMenu()
@@ -132,6 +147,9 @@ def run ():
         os.system ('cls')
         cancelorder()  
     elif n==7:
+        os.system ('cls')
+        itempurchase() 
+    elif n==8:
         os.system ('cls')
         print(' — — — Thank You — — -')
     else:

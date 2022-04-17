@@ -23,3 +23,7 @@ https://www.youtube.com/watch?v=xoTyrdT9SZI
 
 *ER Diagram 
 https://www.freeprojectz.com/entity-relationship/shop-management-system-er-diagram
+
+*Join Table
+https://www.javatpoint.com/python-mysql-join-operation
+https://stackoverflow.com/questions/2366780/how-to-do-an-inner-join-on-multiple-columns
