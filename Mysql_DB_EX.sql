@@ -36,7 +36,7 @@ CREATE TABLE `clientlist` (
 
 LOCK TABLES `clientlist` WRITE;
 /*!40000 ALTER TABLE `clientlist` DISABLE KEYS */;
-INSERT INTO `clientlist` VALUES ('C1','1111','Tuen Mun'),('C2','2222','Diamond Hill'),('C3','3333','Tai Wai');
+INSERT INTO `clientlist` VALUES ('C1','1111','Tuen Mun'),('C2','2222','Diamond Hill'),('C3','3333','Tai Wai'),('admin',NULL,NULL);
 /*!40000 ALTER TABLE `clientlist` ENABLE KEYS */;
 UNLOCK TABLES;
 
