@@ -96,7 +96,7 @@ CREATE TABLE `orderlist` (
 
 LOCK TABLES `orderlist` WRITE;
 /*!40000 ALTER TABLE `orderlist` DISABLE KEYS */;
-INSERT INTO `orderlist` VALUES ('S1001','C1','S1','I1',5,'2022-04-18','N'),('S2001','C2','S1','I2',5,'2022-04-18','N'),('S3001','C1','S3','I1',5,'2022-04-18','N');
+INSERT INTO `orderlist` VALUES ('S1001','C1','S1','I1',5,NOW(),'N'),('S2001','C2','S1','I2',5,NOW(),'N'),('S3001','C1','S3','I1',5,NOW(),'N');
 /*!40000 ALTER TABLE `orderlist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,3 +136,6 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2022-04-18  3:55:06
+CREATE TRIGGER insert_qty_new_order AFTER INSERT ON orderlist FOR EACH ROW UPDATE itemlist,orderlist SET itemlist.qty=itemlist.qty-orderlist.qty WHERE itemlist.sid=orderlist.sid AND itemlist.iid=orderlist.iid AND orderlist.recstat='N' ;
+
+CREATE TRIGGER update_order AFTER UPDATE ON orderlist FOR EACH ROW UPDATE itemlist,orderlist SET itemlist.qty= CASE WHEN recstat='C' THEN itemlist.qty+orderlist.qty END WHERE itemlist.sid=orderlist.sid AND itemlist.iid=orderlist.iid ;

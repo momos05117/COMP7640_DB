@@ -10,6 +10,8 @@ connection = mysql.connector.connect(host='127.0.0.1',
                                      database='management')
 cursor = connection.cursor()
 
+global userid
+
 
 def adminMainMenu():
     print(' — — — — MENU — — — -')
@@ -28,7 +30,7 @@ def customerMainMenu():
     print(' 1. Show All Shops')
     print(' 2. Show All Items')
     print(' 3. Search Item')
-    print(' 4. Place Order')
+    print(' 4. Show Order')
     print(' 5. Cancel Order')
     print(' 6. Item Purchase')
     print(' 7. Exit')
@@ -95,49 +97,42 @@ def adminOptions():
 def customerOptions():
     choice = int(input("Please enter your choice : "))
     if choice == 1:
-        os.system('cls')
         customerMainMenu()
         print("\n===================================================\n")
         allshops()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 2:
-        os.system('cls')
         customerMainMenu()
         print("\n===================================================\n")
         allitems()
         print("\n===================================================\n")
         customerOptions()
     elif choice == 3:
-        os.system('cls')
         customerMainMenu()
         print("\n===================================================\n")
-        addshop()
+        searchitem()()
         print("\n===================================================\n")
         customerOptions()
     elif choice == 4:
-        os.system('cls')
         customerMainMenu()
         print("\n===================================================\n")
-        additem()
+        showorder()
         print("\n===================================================\n")
         customerOptions()
     elif choice == 5:
-        os.system('cls')
-        customerMainMenu()
-        print("\n===================================================\n")
-        searchitem()
-        print("\n===================================================\n")
-        customerOptions()
-    elif choice == 6:
-        os.system('cls')
         customerMainMenu()
         print("\n===================================================\n")
         cancelorder()
         print("\n===================================================\n")
         customerOptions()
+    elif choice == 6:
+        customerMainMenu()
+        print("\n===================================================\n")
+        itempurchase()
+        print("\n===================================================\n")
+        customerOptions()
     elif choice == 7:
-        os.system('cls')
         print("\n===================================================\n")
         exit()
         print("\n====================BYE!===========================\n")
@@ -210,9 +205,8 @@ def additem():
     kw3 = input('Enter the 3rd characteristic of this item:')
     qty = input('Enter the quantity of this item:')
     sid = input('Enter Shop ID:')
-    compid = (iid+sid)
-    sql = 'INSERT INTO `itemlist`(`iid`,`iname`,`price`,`kw1`,`kw2`,`kw3`,`qty`,`sid`,`compid`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-    val = (iid, iname, price, kw1, kw2, kw3, qty, sid, compid)
+    sql = 'INSERT INTO `itemlist`(`iid`,`iname`,`price`,`kw1`,`kw2`,`kw3`,`qty`,`sid`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)'
+    val = (iid.upper(), iname, price, kw1, kw2, kw3, qty, sid.upper())
     cursor.execute(sql, val)
     connection.commit()
     print('---Successfully Added---')
@@ -241,30 +235,81 @@ def searchitem():
 def cancelorder():
     print('---Cancel Order---')
     oid = input('Enter Order ID: ')
-    sql = "DELETE FROM orderlist WHERE oid ='"+oid+"'"
+    sql = "SELECT oid,shoplist.sname,itemlist.iname,itemlist.price,orderlist.qty FROM orderlist LEFT JOIN itemlist ON itemlist.iid=orderlist.iid AND itemlist.sid=orderlist.sid LEFT JOIN shoplist ON orderlist.sid=shoplist.sid WHERE orderlist.oid like '%"+oid+"%'"
     cursor.execute(sql)
-    connection.commit()
-
-    print('---Sucessfully Canceled ---')
+    records = cursor.fetchall()
+    print("\nOrder Id\tShop Name\tItem Name\tPrice\t\tQty.")
+    print("=======================================================================================")
+    for r in records:
+        print(f'{r[0]}\t\t{r[1]}\t{r[2]}\t\t{r[3]}\t\t{r[4]}')
+    confirm_cancel_oid = input(
+        "\nPlease input the order ID that you want to cancel or press enter to skip :")
+    if confirm_cancel_oid != "":
+        sql = "UPDATE orderlist SET recstat='C' WHERE oid ='"+confirm_cancel_oid+"'"
+        cursor.execute(sql)
+        connection.commit()
+        print('---Sucessfully Canceled ---')
+    else:
+        customerMainMenu()
+        customerOptions()
 
 # item purchase
 
 
 def itempurchase():
+    global userid
     print('---Item Purchase---')
-    oid = input('Enter Order ID: ')
-    sql = "SELECT itemlist.iname, orderlist.cid FROM itemlist INNER JOIN orderlist ON itemlist.compid IN(orderlist.compid1,orderlist.compid2, orderlist.compid3 ) WHERE orderlist.oid like '%"+oid+"%'"
+    sid = input('Enter Shop ID: ')
+    iid = input('Enter Item ID: ')
+    chk_shop_stock_sql = "SELECT iid,sid,iname,price FROM itemlist WHERE sid= '" + \
+        sid+"' AND iid='"+iid+"'"
+    cursor.execute(chk_shop_stock_sql)
+    records = cursor.fetchall()
+    if len(records) == 0:
+        print('---No Item Record. Input Again---')
+        itempurchase()
+    else:
+        for r in records:
+            item_name = r[2]
+            item_price = r[3]
+        qty = input("Enter the Qty you want to buy:")
+        confirm_to_buy = input("\nPlease confirm the order that you want item:" +
+                               item_name+",Qty:"+str(qty)+",Price:"+str(item_price)+" [Y/N]: ")
+        if confirm_to_buy == 'Y' or confirm_to_buy == 'y':
+            get_max_oid_sql = "select max(oid),UPPER(concat(left(max(oid),2),lpad(right(oid,3)+001,3,0))) AS max from orderlist where sid like '"+sid+"%'"
+            cursor.execute(get_max_oid_sql)
+            records = cursor.fetchall()
+            if len(records) == 0:
+                max_oid = sid+"001"
+            else:
+                for r in records:
+                    max_oid = r[1]
+            insert_sql = "INSERT INTO orderlist VALUES(%s,%s,%s,%s,%s,NOW(),'N')"
+            val = (max_oid, userid.upper(),
+                   sid.upper(), iid.upper(), qty)
+            cursor.execute(insert_sql, val)
+            connection.commit()
+            print('Purchase Succfully. Order ID:')
+            print(max_oid)
+        else:
+            customerMainMenu()
+            customerOptions()
+
+
+def showorder():
+    print('---Show Your All Ordered---')
+    sql = "SELECT oid,shoplist.sname,itemlist.iname,itemlist.price,orderlist.qty FROM orderlist LEFT JOIN itemlist ON itemlist.iid=orderlist.iid AND itemlist.sid=orderlist.sid LEFT JOIN shoplist ON orderlist.sid=shoplist.sid WHERE orderlist.cid ='"+userid+"'"
     cursor.execute(sql)
     records = cursor.fetchall()
+    print("\nOrder Id\tShop Name\tItem Name\tPrice\t\tQty.")
+    print("=======================================================================================")
     for r in records:
-        print(r)
-
-    print('---Purchase List End ---')
-
+        print(f'{r[0]}\t\t{r[1]}\t{r[2]}\t\t{r[3]}\t\t{r[4]}')
 # login function for admin role or customer role
 
 
 def login():
+    global userid
     userid = ''
     username = input(
         "Input your user ID to login : ")
