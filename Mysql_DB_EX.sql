@@ -84,6 +84,7 @@ CREATE TABLE `orderlist` (
   `iid` varchar(5) NOT NULL,
   `qty` int DEFAULT NULL,
   `odate` date DEFAULT NULL,
+  `recstat` char(1) not null,
   CONSTRAINT fk_cid FOREIGN KEY (`cid`) REFERENCES `clientlist` (`cid`),
   CONSTRAINT fk_order_item FOREIGN KEY (`iid`,`sid`) REFERENCES `itemlist` (`iid`,`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -95,7 +96,7 @@ CREATE TABLE `orderlist` (
 
 LOCK TABLES `orderlist` WRITE;
 /*!40000 ALTER TABLE `orderlist` DISABLE KEYS */;
-INSERT INTO `orderlist` VALUES ('S1001','C1','S1','I1',5,'2022-04-18'),('S2001','C2','S1','I2',5,'2022-04-18'),('S3001','C1','S3','I1',5,'2022-04-18');
+INSERT INTO `orderlist` VALUES ('S1001','C1','S1','I1',5,'2022-04-18','N'),('S2001','C2','S1','I2',5,'2022-04-18','N'),('S3001','C1','S3','I1',5,'2022-04-18','N');
 /*!40000 ALTER TABLE `orderlist` ENABLE KEYS */;
 UNLOCK TABLES;
 
