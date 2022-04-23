@@ -56,9 +56,7 @@ CREATE TABLE `itemlist` (
   `kw3` varchar(20) DEFAULT NULL,
   `qty` int DEFAULT NULL,
   `sid` varchar(5) DEFAULT NULL,
-  `compid` varchar(45) NOT NULL,
-  PRIMARY KEY (`compid`),
-  KEY `sid` (`sid`)
+  PRIMARY KEY(`iid`, `sid`)  
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -68,7 +66,7 @@ CREATE TABLE `itemlist` (
 
 LOCK TABLES `itemlist` WRITE;
 /*!40000 ALTER TABLE `itemlist` DISABLE KEYS */;
-INSERT INTO `itemlist` VALUES ('I1','Apple',10,'Red','Sweet',NULL,200,'S1','I1S1'),('I2','Orange',8,'Yellow','Fresh','Australia',100,'S1','I2S1'),('I3','Apple',8000,'Red','256G',NULL,50,'S2','I3S2'),('I6','AI',400,'Paperback','Deep learning','Python',95,'S3','I3S3'),('I4','Samsung',7000,'Black','128G','Folding',20,'S2','I4S2'),('I5','DB',500,'Paperback','Relational','SQL',90,'S3','I5S3');
+INSERT INTO `itemlist` VALUES ('I1','Apple',10,'Red','Sweet',NULL,200,'S1'),('I2','Orange',8,'Yellow','Fresh','Australia',100,'S1'),('I3','Apple',8000,'Red','256G',NULL,50,'S2'),('I6','AI',400,'Paperback','Deep learning','Python',95,'S3'),('I4','Samsung',7000,'Black','128G','Folding',20,'S2'),('I5','DB',500,'Paperback','Relational','SQL',90,'S3'),('I1','Apple',7000,'Black','128G',NULL,20,'S3');
 /*!40000 ALTER TABLE `itemlist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,21 +79,13 @@ DROP TABLE IF EXISTS `orderlist`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orderlist` (
   `oid` varchar(5) NOT NULL,
-  `cid` varchar(5) DEFAULT NULL,
+  `cid` varchar(5) NOT NULL, 
+  `sid` varchar(5) NOT NULL,
+  `iid` varchar(5) NOT NULL,
+  `qty` int DEFAULT NULL,
   `odate` date DEFAULT NULL,
-  `compid1` varchar(45) DEFAULT NULL,
-  `oqty1` int DEFAULT NULL,
-  `compid2` varchar(45) DEFAULT NULL,
-  `oqty2` int DEFAULT NULL,
-  `compid3` varchar(45) DEFAULT NULL,
-  `oqty3` int DEFAULT NULL,
-  PRIMARY KEY (`oid`),
-  KEY `compid1` (`compid1`),
-  KEY `compid2` (`compid2`),
-  KEY `compid3` (`compid3`),
-  CONSTRAINT `orderlist_ibfk_1` FOREIGN KEY (`compid1`) REFERENCES `itemlist` (`compid`),
-  CONSTRAINT `orderlist_ibfk_2` FOREIGN KEY (`compid2`) REFERENCES `itemlist` (`compid`),
-  CONSTRAINT `orderlist_ibfk_3` FOREIGN KEY (`compid3`) REFERENCES `itemlist` (`compid`)
+  CONSTRAINT fk_cid FOREIGN KEY (`cid`) REFERENCES `clientlist` (`cid`),
+  CONSTRAINT fk_order_item FOREIGN KEY (`iid`,`sid`) REFERENCES `itemlist` (`iid`,`sid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -105,7 +95,7 @@ CREATE TABLE `orderlist` (
 
 LOCK TABLES `orderlist` WRITE;
 /*!40000 ALTER TABLE `orderlist` DISABLE KEYS */;
-INSERT INTO `orderlist` VALUES ('O1','C1','2022-04-18','I1S1',1,'I2S1',5,'I3S2',1),('O2','C2','2022-04-19','I2S1',2,'I3S2',4,'I4S2',1),('O3','C3','2022-04-20','I3S2',3,'I4S2',3,'I5S3',1),('O4','C1','2022-04-21','I4S2',4,'I5S3',2,'I3S3',1),('O5','C2','2022-04-22','I5S3',5,'I3S3',1,'I1S1',1);
+INSERT INTO `orderlist` VALUES ('S1001','C1','S1','I1',5,'2022-04-18'),('S2001','C2','S1','I2',5,'2022-04-18'),('S3001','C1','S3','I1',5,'2022-04-18');
 /*!40000 ALTER TABLE `orderlist` ENABLE KEYS */;
 UNLOCK TABLES;
 

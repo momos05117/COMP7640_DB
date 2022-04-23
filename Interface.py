@@ -28,9 +28,10 @@ def customerMainMenu():
     print(' 1. Show All Shops')
     print(' 2. Show All Items')
     print(' 3. Search Item')
-    print(' 4. Cancel Order')
-    print(' 5. Item Purchase')
-    print(' 6. Exit')
+    print(' 4. Place Order')
+    print(' 5. Cancel Order')
+    print(' 6. Item Purchase')
+    print(' 7. Exit')
     print(' — — — — — — — — — — ')
 
 
@@ -221,12 +222,16 @@ def additem():
 
 def searchitem():
     print('---Search Item---')
-    iname = input('Enter Item Name: ')
-    sql = "SELECT * FROM itemlist WHERE iname LIKE '%"+iname+"%'"
+    iname = input('Enter keyword of Item: ')
+    sql = "SELECT iid,sname,iname,CONCAT(COALESCE(`kw1`,''),' ',COALESCE(`kw2`,''),' ',COALESCE(`kw3`,'')) as descri,price,qty FROM itemlist LEFT JOIN shoplist ON itemlist.sid=shoplist.sid WHERE iname LIKE '%" + \
+        iname+"%' OR kw1 LIKE '%"+iname+"%' OR kw2 LIKE '%" + \
+        iname+"%' OR kw3 LIKE '%"+iname+"%'"
     cursor.execute(sql)
     records = cursor.fetchall()
+    print("\nId\tShop Name\tItem Name\tItem Description\tPrice\t\tQty.")
+    print("=======================================================================================")
     for r in records:
-        print(r)
+        print(f'{r[0]}\t{r[1]}\t{r[2]}\t\t{r[3]}\t\t{r[4]}\t\t{r[5]}')
 
     print('---Sucessfully Search---')
 
@@ -236,7 +241,7 @@ def searchitem():
 def cancelorder():
     print('---Cancel Order---')
     oid = input('Enter Order ID: ')
-    sql = "DELETE FROM orderlist WHERE oid LIKE '%"+oid+"%'"
+    sql = "DELETE FROM orderlist WHERE oid ='"+oid+"'"
     cursor.execute(sql)
     connection.commit()
 
