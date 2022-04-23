@@ -138,4 +138,4 @@ UNLOCK TABLES;
 -- Dump completed on 2022-04-18  3:55:06
 CREATE TRIGGER insert_qty_new_order AFTER INSERT ON orderlist FOR EACH ROW UPDATE itemlist,orderlist SET itemlist.qty=itemlist.qty-orderlist.qty WHERE itemlist.sid=orderlist.sid AND itemlist.iid=orderlist.iid AND orderlist.recstat='N' ;
 
-CREATE TRIGGER update_order AFTER UPDATE ON orderlist FOR EACH ROW UPDATE itemlist,orderlist SET itemlist.qty= CASE WHEN recstat='C' THEN itemlist.qty+orderlist.qty END WHERE itemlist.sid=orderlist.sid AND itemlist.iid=orderlist.iid ;
+CREATE TRIGGER update_order AFTER UPDATE ON orderlist FOR EACH ROW UPDATE itemlist,orderlist SET itemlist.qty=itemlist.qty+orderlist.qty  WHERE itemlist.sid=orderlist.sid AND itemlist.iid=orderlist.iid AND orderlist.recstat='C' ;
