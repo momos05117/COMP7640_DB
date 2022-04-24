@@ -28,7 +28,7 @@ def adminMainMenu():
 def customerMainMenu():
     print(' — — — — MENU — — — -')
     print(' 1. Show All Shops')
-    print(' 2. Show All Items')
+    print(' 2. Show All Items in each shop')
     print(' 3. Search Item')
     print(' 4. Show Order')
     print(' 5. Cancel Order')
@@ -40,49 +40,42 @@ def customerMainMenu():
 def adminOptions():
     choice = int(input("Please enter your choice[MENU 1-7] : "))
     if choice == 1:
-        os.system('cls')
         adminMainMenu()
         print("\n===================================================\n")
         allshops()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 2:
-        os.system('cls')
         adminMainMenu()
         print("\n===================================================\n")
         allitems()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 3:
-        os.system('cls')
         adminMainMenu()
         print("\n===================================================\n")
         addshop()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 4:
-        os.system('cls')
         adminMainMenu()
         print("\n===================================================\n")
         additem()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 5:
-        os.system('cls')
         adminMainMenu()
         print("\n===================================================\n")
         searchitem()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 6:
-        os.system('cls')
         adminMainMenu()
         print("\n===================================================\n")
         cancelorder()
         print("\n===================================================\n")
         adminOptions()
     elif choice == 7:
-        os.system('cls')
         print("\n===================================================\n")
         exit()
         print("\n====================BYE!===========================\n")
@@ -95,13 +88,13 @@ def adminOptions():
 
 
 def customerOptions():
-    choice = int(input("Please enter your choice : "))
+    choice = int(input("Please enter your choice[MENU 1-7] : "))
     if choice == 1:
         customerMainMenu()
         print("\n===================================================\n")
         allshops()
         print("\n===================================================\n")
-        adminOptions()
+        customerOptions()
     elif choice == 2:
         customerMainMenu()
         print("\n===================================================\n")
@@ -111,7 +104,7 @@ def customerOptions():
     elif choice == 3:
         customerMainMenu()
         print("\n===================================================\n")
-        searchitem()()
+        searchitem()
         print("\n===================================================\n")
         customerOptions()
     elif choice == 4:
@@ -233,6 +226,7 @@ def searchitem():
 
 
 def cancelorder():
+    global userid
     print('---Cancel Order---')
     oid = input('Enter Order ID: ')
     sql = "SELECT oid,shoplist.sname,itemlist.iname,itemlist.price,orderlist.qty FROM orderlist LEFT JOIN itemlist ON itemlist.iid=orderlist.iid AND itemlist.sid=orderlist.sid LEFT JOIN shoplist ON orderlist.sid=shoplist.sid WHERE orderlist.oid like '%"+oid+"%'"
@@ -250,8 +244,12 @@ def cancelorder():
         connection.commit()
         print('---Sucessfully Canceled ---')
     else:
-        customerMainMenu()
-        customerOptions()
+        if userid == "admin":
+            adminMainMenu()
+            adminOptions()
+        else:
+            customerMainMenu()
+            customerOptions()
 
 # item purchase
 
@@ -276,7 +274,8 @@ def itempurchase():
         confirm_to_buy = input("\nPlease confirm the order that you want item:" +
                                item_name+",Qty:"+str(qty)+",Price:"+str(item_price)+" [Y/N]: ")
         if confirm_to_buy == 'Y' or confirm_to_buy == 'y':
-            get_max_oid_sql = "select max(oid),UPPER(concat(left(max(oid),2),lpad(right(oid,3)+001,3,0))) AS max from orderlist where sid like '"+sid+"%'"
+            # find the max order of the shop
+            get_max_oid_sql = "select max(oid),UPPER(concat(left(max(oid),2),lpad(right(oid,3)+001,3,0))) AS max from orderlist where sid = '"+sid+"'"
             cursor.execute(get_max_oid_sql)
             records = cursor.fetchall()
             if len(records) == 0:
